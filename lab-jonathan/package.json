@@ -1,0 +1,19 @@
+{
+  "name": "lab-jonathan",
+  "version": "1.0.0",
+  "description": "lab 13 mongo",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Jonathan",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "mongoose": "^4.7.5"
+  }
+}
