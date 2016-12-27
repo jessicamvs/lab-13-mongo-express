@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 
 const errorMiddleware = require('./lib/errormiddleware');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/statshot';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/event';
 const PORT = process.env.PORT || 3000;
 
 mongoose.Promise = Promise;
@@ -23,7 +23,7 @@ app.get('*', function(req, res, next) {
   next();
 });
 
-app.use('/api', require('./routes/statshot-route'));
+app.use('/api', require('./routes/event-route'));
 app.use(errorMiddleware);
 
 module.exports = app;
