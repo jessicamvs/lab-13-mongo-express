@@ -1,16 +1,21 @@
 'use strict'
 
-const PORT = process.env.PORT || 3000
+let MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost/dogApi'
+let PORT = process.env.PORT || 3000
+
 
 const Express = require('express')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const app = Express()
 const router = Express.Router()
-const storage = require('./model/storage')
 const htmlErrorHandler = require('./lib/htmlErrorHandler')
+const mongoose = require('mongoose')
 
-require('./routes/dog-routes')(router, storage)
+mongoose.Promise = Promise
+mongoose.connect(MONGO_URI)
+
+require('./routes/dog-routes')(router)
 
 app.use(morgan('dev'))
 app.use(bodyParser.json())

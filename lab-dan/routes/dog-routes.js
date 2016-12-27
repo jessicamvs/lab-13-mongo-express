@@ -1,8 +1,9 @@
 'use strict'
 
 const responseHandler = require('../lib/responseHandler')
+const Dog = require('../model/dog')
 
-module.exports = (router, storage) => {
+module.exports = (router) => {
 
   // router expects 3 different things: verb, route, and callback
   // one callback per verb/route combo
@@ -11,9 +12,9 @@ module.exports = (router, storage) => {
   })
 
   router.get('/dogs/all', function(request, response) {
-    storage.fetchAll()
+    Dog.find()
       .then(data => {
-        responseHandler.sendJSON(response, data.code, data.data)
+        responseHandler.sendJSON(response, 200, data)
       })
       .catch(err => {
         responseHandler.sendText(response, 400, err)
@@ -21,9 +22,9 @@ module.exports = (router, storage) => {
   })
 
   router.get('/dogs/:id', function(request, response) {
-    storage.fetchItem(request.params.id)
+    Dog.findById(request.params.id)
       .then(data => {
-        responseHandler.sendJSON(response, data.code, data.data)
+        responseHandler.sendJSON(response, 200, data)
       })
       .catch(err => {
         responseHandler.sendText(response, 404, err)
@@ -31,9 +32,9 @@ module.exports = (router, storage) => {
   })
 
   router.post('/dogs', function(request, response) {
-    storage.postItem(request.body)
+    new Dog(request.body).save()
       .then(data => {
-        responseHandler.sendJSON(response, data.code, data.data)
+        responseHandler.sendJSON(response, 201, data)
       })
       .catch(err => {
         responseHandler.sendText(response, 400, err)
@@ -41,9 +42,9 @@ module.exports = (router, storage) => {
   })
 
   router.put('/dogs', function(request, response) {
-    storage.putItem(request.body)
+    Dog.findByIdAndUpdate(request.body.id, request.body, {new: true, upsert: true})
       .then(data => {
-        responseHandler.sendJSON(response, data.code, data.data)
+        responseHandler.sendJSON(response, 200, data)
       })
       .catch(err => {
         responseHandler.sendText(response, 400, err)
@@ -51,9 +52,10 @@ module.exports = (router, storage) => {
   })
 
   router.delete('/dogs/:id', function(request, response) {
-    storage.deleteItem(request.params.id)
+    Dog.findByIdAndRemove(request.params.id)
       .then(data => {
-        responseHandler.sendText(response, data.code, data.text)
+        data.message = 'Delete Successful'
+        responseHandler.sendJSON(response, 200, data)
       })
       .catch(err => {
         responseHandler.sendText(response, 400, err)

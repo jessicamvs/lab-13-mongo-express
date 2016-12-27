@@ -1,6 +1,6 @@
-#:dog: Dan's Dog(e) API with Express :dog:
+#:dog: Dan's Dog(e) API with Express & Mongo :dog:
 
-This is a basic API with _persistent_ data which is powered by Express.
+This is a basic API with _persistent_ data which is powered by Express and MongoDB.
 
 Objects are stored as JSON objects in the data folder and the stored objects have
 the following properties: ```id, creationDate, name, breed```.
