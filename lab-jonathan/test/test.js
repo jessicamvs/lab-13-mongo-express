@@ -5,10 +5,15 @@ require('../index.js');
 
 describe('testing guitar rotues', function(){
   let guitar = null;
-
+  before(() => {
+    console.log('waiting');
+    setTimeout(() => {}, 10000);
+  });
   it('should return 404 for an unregistered route', function(done) {
-    request.get('localhost:9000/stuff')
+    request.get('http://localhost:9000/stuff')
     .end((err, res) => {
+      console.log(err);
+      console.log(res);
       expect(res.status).to.equal(404);
       done();
     });
@@ -16,10 +21,10 @@ describe('testing guitar rotues', function(){
 
 
 // test POST errors/messages
-  describe('testing POST /api/guitars for response 200', function(){
+  describe('testing POST /guitars for response 200', function(){
     it('should return a guitar', function(done){
       // let guitar = null;
-      request.post('localhost:9000/api/guitars')
+      request.post('localhost:9000/guitars')
       .send({make: 'GUITAR MAKE', model: 'GUITAR MODEL'})
       .end((err, res) => {
         if (err) return done(err);
@@ -32,20 +37,20 @@ describe('testing guitar rotues', function(){
     });
 
     it('should responds with "bad request" for if no body provided or invalid body provided', function(done){
-      request.post('localhost:9000/api/guitars/4')
+      request.post('localhost:9000/guitars/4')
       .send({make: 'fender'})
       .end((err, res) => {
         expect(res.status).to.equal(404);
         done();
       });
     });
-});
+  });
 
 
 // testing GET errors/messages
-  describe('testing GET /api/guitars responsd with 200', function(){
+  describe('testing GET /guitars responsd with 200', function(){
     it('provided an id it should return a guitar', function(done){
-      request.get(`localhost:9000/api/guitars/${guitar.id}`)
+      request.get(`localhost:9000/guitars/${guitar.id}`)
       .end((err, res) => {
         if (err) return done(err);
         expect(res.status).to.equal(200);
@@ -56,7 +61,7 @@ describe('testing guitar rotues', function(){
     });
 
     it('should return a 400 bad request error if no id was provided', function(done){
-      request.get(`localhost:9000/api/guitars/`)
+      request.get(`localhost:9000/guitars/`)
       .end((err, res) => {
         expect(res.status).to.equal(400);
         done();
@@ -64,7 +69,7 @@ describe('testing guitar rotues', function(){
     });
 
     it('should return a 404 not found error if the id was not found' , function(done){
-      request.get('localhost:9000/api/guitars/ibanez')
+      request.get('localhost:9000/guitars/ibanez')
       .end((err, res) => {
         expect(res.status).to.equal(404);
         expect(res.text).to.equal('not found');
@@ -75,9 +80,9 @@ describe('testing guitar rotues', function(){
 
   });
 
-  describe('testing PUT /api/guitars/:id', function(){
+  describe('testing PUT /guitars/:id', function(){
     it('should return an updated guitar', function(done){
-      request.put(`localhost:9000/api/guitars/${guitar.id}`)
+      request.put(`localhost:9000/guitars/${guitar.id}`)
       .send({make: 'GUITARMAKE', model: 'GUITARMODEL'})
       .end((err, res) => {
         let body = JSON.parse(res.body);
@@ -89,7 +94,7 @@ describe('testing guitar rotues', function(){
     });
 
     it('should responds with "bad request" for if no body provided', function(done){
-      request.put(`localhost:9000/api/guitars/${guitar.id}`)
+      request.put(`localhost:9000/guitars/${guitar.id}`)
       .end((err, res) => {
         expect(res.status).to.equal(400);
         expect(res.text).to.equal('Bad Request');
@@ -98,7 +103,7 @@ describe('testing guitar rotues', function(){
     });
 
     it('should responds with "bad request" for if invalid body provided', function(done){
-      request.put(`localhost:9000/api/guitars/${guitar.id}`)
+      request.put(`localhost:9000/guitars/${guitar.id}`)
       .send('45245234erwdfgadsf')
       .end((err, res) => {
         expect(res.status).to.equal(400);
@@ -111,9 +116,9 @@ describe('testing guitar rotues', function(){
 
 
 //DELETE tests
-  describe('testing DELETE /api/guitars/:id', function(){
+  describe('testing DELETE /guitars/:id', function(){
     it('should respond with 204 if there is no content in the response body', function(done){
-      request.delete(`localhost:9000/api/guitars/${guitar.id}`)
+      request.delete(`localhost:9000/guitars/${guitar.id}`)
       .end((err, res) => {
         expect(res.status).to.equal(204);
         expect(res.body).to.deep.equal({});
@@ -123,7 +128,7 @@ describe('testing guitar rotues', function(){
     });
 
     it('should respond with 404 if a bad id is provided', function(done){
-      request.delete('localhost:9000/api/guitars/BADID')
+      request.delete('localhost:9000/guitars/BADID')
       .end((err, res) => {
         expect(res.status).to.equal(404);
         done();
@@ -131,7 +136,7 @@ describe('testing guitar rotues', function(){
     });
 
     it('should respond with 404 if no id is provided', function(done){
-      request.delete('localhost:9000/api/guitars')
+      request.delete('localhost:9000/guitars')
       .end((err, res) => {
         expect(res.status).to.equal(404);
         done();
