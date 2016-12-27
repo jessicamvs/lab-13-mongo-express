@@ -38,12 +38,16 @@ router.put('/events', function(req, res, next) {
     }
     event.username = req.body.username;
     event.stats = req.body.stats;
-    event.save().then(res.json(event));
+    event.save(function() {
+      res.json(event);
+    });
   }).catch(next);
 });
 
-router.delete('/events/:id', function(req, res, next) {
-  Event.remove({ _id: req.params.id }).then(res.status(204).end()).catch(next);
+router.delete('/events/:id', function(req, res) {
+  Event.remove({ _id: req.params.id }, function() {
+    res.status(204).end();
+  });
 });
 
 module.exports = router;
