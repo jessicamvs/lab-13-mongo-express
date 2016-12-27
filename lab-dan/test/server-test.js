@@ -4,12 +4,13 @@
 const expect = require('chai').expect
 const chai = require('chai')
 const chaiHttp = require('chai-http')
+const ObjectId = require('mongoose').Types.ObjectId
 
 chai.use(chaiHttp)
 
 const app = require('../index.js')
 
-describe('this is a basic test that my server spins up', function() {
+describe('Dog API', function() {
   let testID1 = ''
   let testID2 = ''
 
@@ -23,26 +24,23 @@ describe('this is a basic test that my server spins up', function() {
       })
   })
 
-  it('should get a 404 response with \'not found\' for a GET request to \'/dogs/nonexistentid\'', function(done) {
+  it('should get a 422 response for a GET request to \'/dogs/improperid\'', function(done) {
     chai.request(app)
-      .get('/dogs/nonexistentid')
+      .get('/dogs/improperid')
       .end(function(err, res) {
-        expect(res).to.have.status(404)
-        expect(res.text).to.be.equal('not found\n')
+        expect(res).to.have.status(422)
+        expect(res.text).to.be.equal('invalid object')
         done()
       })
   })
 
-  it('should get a 200 response with the correct object for a GET request to \'/dogs/1234-test-obj\'', function(done) {
+  it('should get a 200 response with null for a GET request to \'/dogs/:id\' with a nonexistent id', function(done) {
+    let newId = new ObjectId()
     chai.request(app)
-      .get('/dogs/1234-test-obj')
+      .get(`/dogs/${newId}`)
       .end(function(err, res) {
-        let data = JSON.parse(res.text)
-        expect(err).to.be.null
         expect(res).to.have.status(200)
-        expect(res).to.have.header('Content-Type', 'application/json; charset=utf-8')
-        expect(data.name).to.be.equal('Test')
-        expect(data.breed).to.be.equal('Shiba')
+        expect(res.text).to.be.equal('null')
         done()
       })
   })
@@ -55,7 +53,7 @@ describe('this is a basic test that my server spins up', function() {
       .send({ name: testName, breed: testBreed})
       .end(function(err, res) {
         let data = JSON.parse(res.text)
-        testID1 = data.id
+        testID1 = data['_id']
         expect(err).to.be.null
         expect(res).to.have.status(201)
         expect(res).to.have.header('Content-Type', 'application/json; charset=utf-8')
@@ -85,14 +83,15 @@ describe('this is a basic test that my server spins up', function() {
   it('should properly create a new object if an ID does not exist for a PUT request to \'/dogs\'', function(done) {
     let testName = 'PUTtest2Name'
     let testBreed = 'PUTtest2Breed'
+    let newId = new ObjectId()
     chai.request(app)
       .put('/dogs')
-      .send({ id: 'nonexistentid', name: testName, breed: testBreed})
+      .send({ id: newId, name: testName, breed: testBreed})
       .end(function(err, res) {
         let data = JSON.parse(res.text)
-        testID2 = data.id
+        testID2 = data['_id']
         expect(err).to.be.null
-        expect(res).to.have.status(201)
+        expect(res).to.have.status(200)
         expect(res).to.have.header('Content-Type', 'application/json; charset=utf-8')
         expect(data.name).to.be.equal(testName)
         expect(data.breed).to.be.equal(testBreed)
@@ -100,7 +99,7 @@ describe('this is a basic test that my server spins up', function() {
       })
   })
 
-  it('should properly delete an object and return a 200 status for a DELETE request to \'/dogs/:id\'', function(done) {
+  it('should properly delete an object and return a 204 status for a DELETE request to \'/dogs/:id\'', function(done) {
     chai.request(app)
       .del(`/dogs/${testID1}`)
       .end(function(err, res) {
@@ -110,11 +109,11 @@ describe('this is a basic test that my server spins up', function() {
       })
   })
 
-  it('should \'fail\' silently and return a 200 status for a DELETE request to \'/dogs/:id\' for a nonexistent object', function(done) {
+  it('should fail silently and return a 204 status for a DELETE request to \'/dogs/:id\' for a nonexistent object', function(done) {
+    let newId = new ObjectId()
     chai.request(app)
-      .del(`/dogs/${testID1}`)
+      .del(`/dogs/${newId}`)
       .end(function(err, res) {
-        expect(err).to.be.null
         expect(res).to.have.status(204)
         done()
       })

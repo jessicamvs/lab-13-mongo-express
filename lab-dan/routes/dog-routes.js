@@ -2,6 +2,7 @@
 
 const responseHandler = require('../lib/responseHandler')
 const Dog = require('../model/dog')
+const ObjectId = require('mongoose').Types.ObjectId
 
 module.exports = (router) => {
 
@@ -22,12 +23,15 @@ module.exports = (router) => {
   })
 
   router.get('/dogs/:id', function(request, response) {
+    if (!ObjectId.isValid(request.params.id)) {
+      return responseHandler.sendText(response, 422, 'invalid object')
+    }
     Dog.findById(request.params.id)
       .then(data => {
         responseHandler.sendJSON(response, 200, data)
       })
-      .catch(err => {
-        responseHandler.sendText(response, 404, err)
+      .catch(() => {
+        responseHandler.sendText(response, 404, 'not found')
       })
   })
 
@@ -36,29 +40,34 @@ module.exports = (router) => {
       .then(data => {
         responseHandler.sendJSON(response, 201, data)
       })
-      .catch(err => {
-        responseHandler.sendText(response, 400, err)
+      .catch(() => {
+        responseHandler.sendText(response, 400, 'bad request')
       })
   })
 
   router.put('/dogs', function(request, response) {
-    Dog.findByIdAndUpdate(request.body.id, request.body, {new: true, upsert: true})
+    if (!ObjectId.isValid(request.body.id)) {
+      return responseHandler.sendText(response, 404, 'invalid object')
+    }
+    Dog.findByIdAndUpdate(request.body.id, request.body, {upsert: true, new: true})
       .then(data => {
         responseHandler.sendJSON(response, 200, data)
       })
-      .catch(err => {
-        responseHandler.sendText(response, 400, err)
+      .catch(() => {
+        responseHandler.sendText(response, 404, 'not found')
       })
   })
 
   router.delete('/dogs/:id', function(request, response) {
+    if (!ObjectId.isValid(request.params.id)) {
+      return responseHandler.sendText(response, 422, 'invalid object')
+    }
     Dog.findByIdAndRemove(request.params.id)
-      .then(data => {
-        data.message = 'Delete Successful'
-        responseHandler.sendJSON(response, 200, data)
+      .then(() => {
+        responseHandler.sendText(response, 204)
       })
       .catch(err => {
-        responseHandler.sendText(response, 400, err)
+        responseHandler.sendText(response, 404, err)
       })
   })
 }
