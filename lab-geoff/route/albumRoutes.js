@@ -13,7 +13,7 @@ router.post('/api/albums', jsonParser, function(req, res, next) {
   })
   .catch(next);
 });
-router.put('/albums/:id', function(req, res, next) {
+router.put('/api/albums/:id', function(req, res, next) {
   //update existing model
 });
 router.get('/api/albums/:id', jsonParser, function(req, res, next) {
@@ -32,7 +32,7 @@ router.get('/api/albums', jsonParser, function(req, res, next) {
   })
   .catch(next);
 });
-router.delete('/albums/:id', function(req, res, next) {
+router.delete('/api/albums/:id', function(req, res, next) {
   //remove a specific model
 });
 
