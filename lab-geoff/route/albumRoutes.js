@@ -16,8 +16,14 @@ router.post('/api/albums', jsonParser, function(req, res, next) {
 router.put('/albums/:id', function(req, res, next) {
   //update existing model
 });
-router.get('/albums/:id', function(req, res, next) {
-  //return a specific model
+router.get('/api/albums/:id', jsonParser, function(req, res, next) {
+  console.log(req.params.id);
+  Album.findById(req.params.id)
+  .then(album => {
+    console.log(album);
+    res.json(album);
+  })
+  .catch(next);
 });
 router.get('/api/albums', jsonParser, function(req, res, next) {
   Album.find()

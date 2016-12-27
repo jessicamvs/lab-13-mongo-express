@@ -38,7 +38,7 @@ describe('albumRoutes.js', function() {
   describe('.get() /albums/:id', function() {
     it('should return a specific album', function(done) {
       console.log(id);
-      request.get(`http://localhost:3000/api/albums/:${id}`)
+      request.get(`http://localhost:3000/api/albums/${id}`)
       .end((err, res) => {
         if(err) return done(err);
         expect(res.body);
