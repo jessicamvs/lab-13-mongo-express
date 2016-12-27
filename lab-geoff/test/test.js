@@ -7,6 +7,7 @@ let app = require('../server.js');
 describe('albumRoutes.js', function() {
   let server = undefined;
   let id = null;
+  let title = null;
   before(function() {
     server = app.listen(3000, () => {
       console.log('server up');
@@ -43,6 +44,20 @@ describe('albumRoutes.js', function() {
         expect(res.body);
         expect(res.body._id).to.equal(id);//maybe
         console.log(res.body);
+        title = res.body.title;
+        done();
+      });
+    });
+  });
+  describe('.put() /albums/:id', function() {
+    it('should update an existing entry', function(done) {
+      request.put(`http://localhost:3000/api/albums/${id}`)
+      .send({title: 'new test title'})
+      .end((err, res) => {
+        if(err) return done(err);
+        expect(res.body);
+        console.log(res.body.title);
+        expect(res.body.title).to.not.equal(title);
         done();
       });
     });
