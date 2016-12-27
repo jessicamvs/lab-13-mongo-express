@@ -9,9 +9,10 @@ router.post('/leagues', jsonParser, (req, res, next) => {
     res.status(400).end('bad request');
     return;
   }
-  res.status(200).write('creating new league...');
   new League(req.body).save()
-  .then(league => res.json(league))
+  .then(function(league) {
+    res.json(league);
+  })
   .catch(next);
 });
 //when the router encounters a post request, parse the body, take the request, response and next operations. Make a new League with the body, then save it.
@@ -32,26 +33,26 @@ router.put('/leagues/:id', jsonParser, (req, res, next) => {
       //     // {dateOfCreation: req.body.dateOfCreation},
       //     // {commissioner: req.body.commissioner}]); //am I feeling ambituous?? not yet...
     if (err) {
-      if (Object.keys(req.body).length === 0 || !req.body.leagueName) {
-        res.status(400).end('bad request');
-        return;
-      } else {
-        res.status(404).end('not found');
-        return;
-      }
+      res.status(404).end('not found');
     }
   })
   .then(function(league) {
-    league.update({leagueName: req.body.leagueName}, function(err) {
-      if (err) {
-        console.error(err);
-      }
-      res.status(200).end('League successfully updated');
-    });
+    console.log(req.body);
+    if(!req.body.leagueName) {
+      res.status(400).end('bad request');
+    } else {
+      league.update({leagueName: req.body.leagueName}, function(err) {
+        if (err) {
+          res.status(400).end('bad request');
+        } else {
+          res.status(200).json(league);
+        }
+      });
+    }
   })
   .catch(next);
 });
-// });
+
 
 router.delete('/leagues/:id', (req, res, next) => {
   League.findById(req.params.id, err => {
