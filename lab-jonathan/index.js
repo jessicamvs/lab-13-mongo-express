@@ -1,23 +1,43 @@
+
+//npm modules
 let express = require('express');
+let cors = require('cors');
+let morgan = require('morgan');
 let mongoose = require('mongoose');
+let Promise = require('bluebird');
 let jsonParser = require('body-parser').jsonParser;
-let PORT = process.env.PORT || 3000;
-let MONGO_URI = process.env.MONGO_URI;
-mongoose.Promise = Promise;
-mongoose.connect(MONGO_URI);
 
-
-let app = express();
-
+//app modules
 let guitarRouter = require('./route/guitars-routes');
+
+//module connection stuff
+let PORT = process.env.PORT || 9000;
+let MONGO_URI = process.env.MONGO_URI;
+
+//connect to db
+mongoose.Promise = Promise;
+//mongoose.connect(MONGO_URI);
+
+//app middleware
+let app = express();
+app.use(cors());
+app.use(morgan('dev'));
+
+
+//routes
 app.use(guitarRouter);
+console.log(MONGO_URI);
+mongoose.connect(MONGO_URI).then(() => {
+let server = module.exports = app.listen(PORT, function(){
+  console.log(`server is up on ${PORT}`);
+});
+
+server.isRunning = true;
+});
 
 
+// module.exports = app;
 
-
-
-module.exports = app;
-
-if(require.main === module) {
-  app.listen(PORT, () => console.log(`server is up on ${PORT}`));
-}
+// if(require.main === module) {
+//   app.listen(PORT, () => console.log(`server is up on ${PORT}`));
+// }
