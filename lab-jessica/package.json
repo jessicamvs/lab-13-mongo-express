@@ -1,0 +1,25 @@
+{
+  "name": "lab-13-mongo-express",
+  "version": "1.0.0",
+  "description": "Lab 13 - Mongo and Express",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jessicamvs/lab-13-mongo-express.git"
+  },
+  "keywords": [
+    "mongo",
+    "express",
+    "api",
+    "database"
+  ],
+  "author": "Jessica Vasquez-Soltero",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jessicamvs/lab-13-mongo-express/issues"
+  },
+  "homepage": "https://github.com/jessicamvs/lab-13-mongo-express#readme"
+}
