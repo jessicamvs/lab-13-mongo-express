@@ -21,5 +21,10 @@
   "bugs": {
     "url": "https://github.com/jessicamvs/lab-13-mongo-express/issues"
   },
-  "homepage": "https://github.com/jessicamvs/lab-13-mongo-express#readme"
+  "homepage": "https://github.com/jessicamvs/lab-13-mongo-express#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^3.0.1",
+    "gulp-mocha": "^3.0.1"
+  }
 }
