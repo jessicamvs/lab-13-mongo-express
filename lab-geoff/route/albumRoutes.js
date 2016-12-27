@@ -33,7 +33,11 @@ router.get('/api/albums', jsonParser, function(req, res, next) {
   .catch(next);
 });
 router.delete('/api/albums/:id', function(req, res, next) {
-  //remove a specific model
+  Album.findByIdAndRemove(req.params.id)
+  .then(album => {
+    res.json(album);
+  })
+  .catch(next);
 });
 
 module.exports = router;

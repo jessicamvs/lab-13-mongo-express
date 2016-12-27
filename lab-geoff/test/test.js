@@ -12,7 +12,7 @@ describe('albumRoutes.js', function() {
       console.log('server up');
     });
   });
-  describe('.post()', function() {
+  describe('.post() /albums', function() {
     it('should add a new album to the db', function(done) {
       request.post('http://localhost:3000/api/albums')
       .send({title: 'test title'})
@@ -43,6 +43,16 @@ describe('albumRoutes.js', function() {
         expect(res.body);
         expect(res.body._id).to.equal(id);//maybe
         console.log(res.body);
+        done();
+      });
+    });
+  });
+  describe('.delete() /albums/:id', function() {
+    it('should remove an entry from db', function(done) {
+      request.delete(`http://localhost:3000/api/albums/${id}`)
+      .end((err, res) => {
+        if(err) return done(err);
+        expect(res.body);
         done();
       });
     });
