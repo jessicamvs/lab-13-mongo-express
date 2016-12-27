@@ -25,27 +25,36 @@ router.get('/events/:id', function(req, res, next) {
 });
 
 router.post('/events', function(req, res, next) {
+  if (!req.body) return next({ status: 400, message: 'Expected body.' });
+  if (!req.body.username) return next({ status: 400, message: 'Expected username.' });
+  if (!req.body.description) return next({ status: 400, message: 'Expected description.' });
   new Event(req.body).save()
   .then(event => res.json(event))
   .catch(next);
 });
 
-router.put('/events', function(req, res, next) {
-  Event.findById(req.body.id)
+router.put('/events/:id', function(req, res, next) {
+  if (!req.body) return next({ status: 400, message: 'Expected body.' });
+  if (!req.body.username) return next({ status: 400, message: 'Expected username.' });
+  if (!req.body.description) return next({ status: 400, message: 'Expected description.' });
+  Event.findById(req.params.id)
   .then(function(event) {
     if (!event) {
       next({ status: 404, message: 'Event not found.' });
+    } else {
+      event.username = req.body.username;
+      event.description = req.body.description;
+      event.save(function() {
+        res.json(event);
+      });
     }
-    event.username = req.body.username;
-    event.stats = req.body.stats;
-    event.save(function() {
-      res.json(event);
-    });
   }).catch(next);
 });
 
-router.delete('/events/:id', function(req, res) {
-  Event.remove({ _id: req.params.id }, function() {
+router.delete('/events/:id', function(req, res, next) {
+  Event.findByIdAndRemove(req.params.id, function (err, event) {
+    if(err) return next(err);
+    if (!event) return next({ status: 404, message: 'Event not found.' });
     res.status(204).end();
   });
 });

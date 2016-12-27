@@ -7,4 +7,5 @@ module.exports = function(err, req, res, next) {
   } else {
     res.end('Whoops. Unhandled error!');
   }
+  next();
 };
