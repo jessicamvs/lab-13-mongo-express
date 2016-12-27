@@ -1,17 +1,24 @@
 'use strict';
 
 let express = require('express');
-let jsonParser = require('body-parser').json;
+let mongoose = require('mongoose');
+// let jsonParser = require('body-parser').jsonParser; //not sure
+
+// let MONGO_URI = process.env.MONGO_URI;
+let MONGO_URI = 'mongodb://localhost/albums';
+console.log(MONGO_URI);
+let PORT = process.env.PORT || 3000;
+mongoose.Promise = Promise;
+mongoose.connect(MONGO_URI);
 
 let app = express();
-let router = express.Router();
 
-app.use(jsonParser);
-require('./route/albumRoutes.js')(router);
-app.use(router);
+let albumRouter = require('./route/albumRoutes.js');
+app.use(albumRouter);
+// app.use('/albums', albumRouter);
 
-let PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Server on ${PORT}`);
-});
+module.exports = app;
+//
+// app.listen(PORT, () => {
+//   console.log(`Server on ${PORT}`);
+// });

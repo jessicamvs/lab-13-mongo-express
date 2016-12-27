@@ -1,10 +1,10 @@
 'use strict';
 
 let mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-let albumSchema = mongoose.Schema({
-  title: String,
-  required: true
+let albumSchema = Schema({
+  title: { type : String, required: true}
 });
 
 module.exports = mongoose.model('Album', albumSchema);
