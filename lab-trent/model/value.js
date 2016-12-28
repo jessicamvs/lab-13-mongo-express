@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const valueSchema = Schema({
   value: { type: Number, required: true },
-  eventId: { type: Schema.ObjectId, required: true },
+  event: { type: Schema.Types.ObjectId, ref: 'event' },
 });
 
 module.exports = mongoose.model('value', valueSchema);

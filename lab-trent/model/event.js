@@ -7,7 +7,7 @@ const eventSchema = Schema({
   username: { type: String, required: true },
   description: { type: String, required: true },
   date: { type: Date, default: Date.now },
-  valueIds: [Schema.ObjectId],
+  values: [{ type: Schema.Types.ObjectId, ref: 'value'}],
 });
 
 module.exports = mongoose.model('event', eventSchema);
