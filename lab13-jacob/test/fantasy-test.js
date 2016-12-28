@@ -1,3 +1,5 @@
+'use strict';
+
 let expect = require('chai').expect;
 let request = require('superagent');
 let mongoose = require('mongoose');

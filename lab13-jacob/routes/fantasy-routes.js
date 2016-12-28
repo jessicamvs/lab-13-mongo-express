@@ -1,3 +1,5 @@
+'use strict';
+
 let Router = require('express').Router;
 let jsonParser = require('body-parser').json();
 

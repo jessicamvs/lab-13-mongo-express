@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --reporter spec test"
   },
   "keywords": [],
   "author": "",
@@ -12,14 +12,15 @@
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
-    "mongoose": "^4.7.4",
-    "morgan": "^1.7.0"
+    "mongoose": "^4.7.4"
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "gulp": "^3.9.1",
     "gulp-eslint": "^3.0.1",
     "gulp-mocha": "^3.0.1",
     "mocha": "^3.2.0",
-    "superagent": "^3.3.1"
+    "superagent": "^3.3.1",
+    "morgan": "^1.7.0"
   }
 }
