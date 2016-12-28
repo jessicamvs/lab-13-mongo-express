@@ -3,13 +3,19 @@
 require('isomorphic-fetch');
 
 const expect = require('chai').expect;
+const seedEvents = require('../seeds/eventseed');
 
 describe('MongoDB API', function() {
   let server = null;
-  let testId = '';
-  before(function() {
+  let testEvent = null;
+  before(function(done) {
     server = require('../index.js');
-    server = server.listen(3000);
+    server = server.listen(3000, function() {
+      seedEvents().then(function(event) {
+        testEvent = event;
+        done();
+      });
+    });
   });
 
   describe('GET /events', function() {
@@ -49,7 +55,6 @@ describe('MongoDB API', function() {
       }).then(function(res) {
         expect(res.username).to.equal('Trent');
         expect(res.description).to.equal('Recieved a drop!');
-        testId = res._id;
         done();
       });
     });
@@ -62,7 +67,7 @@ describe('MongoDB API', function() {
       });
     });
     it('should return the event posted above.', function(done) {
-      fetch('http://localhost:3000/api/events/' + testId).then(function(res) {
+      fetch('http://localhost:3000/api/events/' + testEvent._id).then(function(res) {
         expect(res.status).to.equal(200);
         return res.json();
       }).then(function(res) {
@@ -86,7 +91,7 @@ describe('MongoDB API', function() {
       });
     });
     it('should return a 400 when an invalid body is given', function(done) {
-      fetch('http://localhost:3000/api/events/' + testId, {
+      fetch('http://localhost:3000/api/events/' + testEvent._id, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -98,7 +103,7 @@ describe('MongoDB API', function() {
       });
     });
     it('should find the previously added object, modify it, save it to the database, and return the edited object', function(done) {
-      fetch('http://localhost:3000/api/events/' + testId, {
+      fetch('http://localhost:3000/api/events/' + testEvent._id, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -122,7 +127,7 @@ describe('MongoDB API', function() {
       });
     });
     it('should return with 204 status to signify deleted.', function(done) {
-      fetch('http://localhost:3000/api/events/' + testId, { method: 'DELETE' }).then(function(res) {
+      fetch('http://localhost:3000/api/events/' + testEvent._id, { method: 'DELETE' }).then(function(res) {
         expect(res.status).to.equal(204);
         done();
       });
