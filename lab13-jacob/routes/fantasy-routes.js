@@ -55,7 +55,7 @@ router.get('/players/:id/leagues', (req, res, next) => {
       console.error(err);
       res.end();
     }
-    res.end(`${leagues.name} belongs to these leagues: ${leagues.leagues}`);
+    res.end(`${leagues.name} belongs to ${leagues.leagues.length} leagues: \n ${leagues.leagues}`);
   })
   .catch(next);
 });
@@ -63,15 +63,11 @@ router.get('/players/:id/leagues', (req, res, next) => {
 
 router.put('/leagues/:id', jsonParser, (req, res, next) => {
   League.findById(req.params.id, function(err) {
-      //     // {numPlayers: req.body.numPlayers},
-      //     // {dateOfCreation: req.body.dateOfCreation},
-      //     // {commissioner: req.body.commissioner}]); //am I feeling ambituous?? not yet...
     if (err) {
       res.status(404).end('not found');
     }
   })
   .then(function(league) {
-    console.log(req.body);
     if(!req.body.leagueName) {
       res.status(400).end('bad request');
     } else {
@@ -87,6 +83,55 @@ router.put('/leagues/:id', jsonParser, (req, res, next) => {
   .catch(next);
 });
 
+router.put('/players/:id', jsonParser, (req, res) => {
+  Player.findById(req.params.id)
+  .then(function(player) {
+    if(req.body.name) {
+      player.update({name: req.body.name}, function(err) {
+        if(err) {
+          res.status(400).end('bad request');
+        } else {
+          res.status(200).json(player);
+        }
+      });
+    } else if (req.body.leagues) {
+      player.update({leagues: req.body.leagues}, function(err) {
+        if(err) {
+          res.status(400).end('bad request');
+        } else {
+          res.status(200).json(player);
+        }
+      });
+    } else {
+      res.status(400).end('bad request');
+    }
+  })
+  .catch(function(err) {
+    if(err) {
+      res.status(404).end('not found');
+    }
+  });
+});
+
+router.delete('/players/:id', (req, res, next) => {
+  Player.findById(req.params.id, err => {
+    if(err) {
+      res.status(404).end('not found');
+      return;
+    }
+  })
+  .then(function(player) {
+    player.remove({_id: player._id}, function(err) {
+      if(err) {
+        console.error(err);
+        res.status(404).end('not found');
+        return;
+      }
+      res.status(204).end();
+    });
+  })
+  .catch(next);
+});
 
 router.delete('/leagues/:id', (req, res, next) => {
   League.findById(req.params.id, err => {
