@@ -13,7 +13,7 @@ const htmlErrorHandler = require('./lib/htmlErrorHandler')
 const mongoose = require('mongoose')
 
 mongoose.Promise = Promise
-mongoose.connect(MONGO_URI)
+mongoose.connect(MONGO_URI).then(() => require('./seeds/seed'))
 
 require('./routes/dog-routes')(router)
 
@@ -24,9 +24,11 @@ app.use(router)
 app.use(htmlErrorHandler)
 
 // init server
-app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`)
-})
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`)
+  })
+}
 
 // for testing purposes
 module.exports = app

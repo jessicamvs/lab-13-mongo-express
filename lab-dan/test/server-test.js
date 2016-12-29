@@ -9,6 +9,9 @@ const ObjectId = require('mongoose').Types.ObjectId
 chai.use(chaiHttp)
 
 const app = require('../index.js')
+const server = app.listen(3000, () => {
+  console.log('Test Server started on port 3000')
+})
 
 describe('Dog API', function() {
   let testID1 = ''
@@ -127,6 +130,13 @@ describe('Dog API', function() {
         expect(res).to.have.status(204)
         done()
       })
+  })
+
+  after(function(done){
+    server.close(function(){
+      console.log('server shut down')
+      done()
+    })
   })
 
 })
