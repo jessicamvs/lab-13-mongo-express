@@ -16,11 +16,11 @@ let dogSchema = new Schema({
     type: String,
     default: 'unknown'
   },
-  // owner: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: 'owners',
-  //   required: true
-  // },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: 'owner',
+    required: true
+  },
 })
 
 module.exports = mongoose.model('dog', dogSchema)

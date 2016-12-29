@@ -15,6 +15,7 @@ mongoose.Promise = Promise
 mongoose.connect(MONGO_URI).then(() => require('./seeds/seed'))
 
 require('./routes/dog-routes')(router)
+require('./routes/owner-routes')(router)
 
 app.use(morgan('dev'))
 app.use(bodyParser.json())

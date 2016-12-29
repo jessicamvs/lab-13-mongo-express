@@ -14,8 +14,8 @@ let ownerSchema = new Schema({
   },
   pets: [{
     type: Schema.Types.ObjectId,
-    ref: 'dogs'
+    ref: 'dog'
   }],
 })
 
-module.exports = mongoose.module('owner', ownerSchema)
+module.exports = mongoose.model('owner', ownerSchema)
