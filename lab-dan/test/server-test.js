@@ -28,6 +28,18 @@ describe('Dog API', function() {
       })
   })
 
+  it('should get a 200 response with seeds for a GET request to dogs/all', function(done) {
+    chai.request(app)
+      .get('/dogs/all')
+      .end(function(err, res) {
+        let data = JSON.parse(res.text)
+        expect(res).to.have.status(200)
+        expect(data.length).to.be.equal(3)
+        expect(data[0].breed).to.be.equal('testBreed')
+        done()
+      })
+  })
+
   it('should get a 422 response for a GET request to \'/dogs/improperid\'', function(done) {
     chai.request(app)
       .get('/dogs/improperid')
