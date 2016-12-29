@@ -4,10 +4,17 @@ require('../index.js');
 
 
 describe('testing guitar rotues', function(){
-  let guitar = null;
-  before(() => {
+  // let guitar = null;
+  let owner = null
+  before((done) => {
     console.log('waiting');
     setTimeout(() => {}, 10000);
+    request.post('localhost:9000/owners')
+       .send({name: 'OWNER NAME', style: 'OWNER STYLE', guitar: 'OWNER GUITAR'})
+       .end((err, res) => {
+         owner = res.body;
+         done();
+       });
   });
   it('should return 404 for an unregistered route', function(done) {
     request.get('http://localhost:9000/stuff')
@@ -21,21 +28,21 @@ describe('testing guitar rotues', function(){
 
 
 // test POST errors/messages
-  describe('testing POST /guitars for response 200', function(){
-    it('should return a guitar', function(done){
-      // let guitar = null;
-      request.post('localhost:9000/guitars')
-      .send({make: 'GUITAR MAKE', model: 'GUITAR MODEL'})
+  describe('testing POST /owners for response 200', function(){
+    it('should return an owner', function(done){
+      request.post('localhost:9000/owners')
+      // let owner = null;
+      .send({name: 'OWNER NAME', style: 'OWNER STYLE', guitar: 'OWNER GUITAR'})
       .end((err, res) => {
         if (err) return done(err);
         expect(res.status).to.equal(200);
-        expect(res.body.make).to.equal('GUITAR MAKE');
-        expect(res.body.model).to.equal('GUITAR MODEL');
-        guitar = res.body;
+        expect(res.body.name).to.equal('OWNER NAME');
+        expect(res.body.style).to.equal('OWNER STYLE');
+  //       // owner = res.body;
         done();
       });
     });
-
+  //
     it('should responds with "bad request" for if no body provided or invalid body provided', function(done){
       request.post('localhost:9000/guitars/4')
       .send({make: 'fender'})
@@ -48,31 +55,32 @@ describe('testing guitar rotues', function(){
 
 
 // testing GET errors/messages
-  describe('testing GET /guitars responsd with 200', function(){
-    it('provided an id it should return a guitar', function(done){
-      request.get(`localhost:9000/guitars/${guitar.id}`)
+  describe('testing GET /owners respones', function(){
+    it('provided an id it should return a owner', function(done){
+      request.get(`localhost:9000/owners/${owner.id}`)
       .end((err, res) => {
         if (err) return done(err);
         expect(res.status).to.equal(200);
-        expect(res.body.make).to.equal('GUITAR MAKE');
-        expect(res.body.model).to.equal('GUITAR MODEL');
+        expect(res.body.name).to.equal('OWNER NAME');
+        expect(res.body.style).to.equal('OWNER STYLE');
+        owner = res.body;
         done();
       });
     });
 
     it('should return a 400 bad request error if no id was provided', function(done){
-      request.get(`localhost:9000/guitars/`)
+      request.get('localhost:9000/owners/')
       .end((err, res) => {
         expect(res.status).to.equal(400);
         done();
       });
     });
 
-    it('should return a 404 not found error if the id was not found' , function(done){
-      request.get('localhost:9000/guitars/ibanez')
+    it('should return a 404 error if the id was not found' , function(done){
+      request.get('localhost:9000/owners/lemmy')
       .end((err, res) => {
         expect(res.status).to.equal(404);
-        expect(res.text).to.equal('not found');
+        // expect(res.text).to.equal('Not Found');
         done();
       });
     });
@@ -80,21 +88,21 @@ describe('testing guitar rotues', function(){
 
   });
 
-  describe('testing PUT /guitars/:id', function(){
-    it('should return an updated guitar', function(done){
-      request.put(`localhost:9000/guitars/${guitar.id}`)
-      .send({make: 'GUITARMAKE', model: 'GUITARMODEL'})
+  describe('testing PUT /owners/:id', function(){
+    it('should return an updated owner', function(done){
+      request.put(`localhost:9000/owners/${owner.id}`)
+      .send({name: 'OWNERNAME', style: 'OWNERSTYLE'})
       .end((err, res) => {
-        let body = JSON.parse(res.body);
+        // let body = JSON.parse(res.body);
         expect(res.status).to.equal(200);
-        expect(body.make).to.equal('GUITARMAKE');
-        expect(body.model).to.equal('GUITARMODEL');
+        expect(res.body.name).to.equal('OWNERNAME');
+        expect(res.body.style).to.equal('OWNERSTYLE');
         done();
       });
     });
 
     it('should responds with "bad request" for if no body provided', function(done){
-      request.put(`localhost:9000/guitars/${guitar.id}`)
+      request.put(`localhost:9000/owners/${owner.id}`)
       .end((err, res) => {
         expect(res.status).to.equal(400);
         expect(res.text).to.equal('Bad Request');
@@ -103,7 +111,7 @@ describe('testing guitar rotues', function(){
     });
 
     it('should responds with "bad request" for if invalid body provided', function(done){
-      request.put(`localhost:9000/guitars/${guitar.id}`)
+      request.put(`localhost:9000/owners/${owner.id}`)
       .send('45245234erwdfgadsf')
       .end((err, res) => {
         expect(res.status).to.equal(400);
@@ -116,9 +124,9 @@ describe('testing guitar rotues', function(){
 
 
 //DELETE tests
-  describe('testing DELETE /guitars/:id', function(){
+  describe('testing DELETE /owners/:id', function(){
     it('should respond with 204 if there is no content in the response body', function(done){
-      request.delete(`localhost:9000/guitars/${guitar.id}`)
+      request.delete(`localhost:9000/owners/${owner.id}`)
       .end((err, res) => {
         expect(res.status).to.equal(204);
         expect(res.body).to.deep.equal({});
@@ -128,7 +136,7 @@ describe('testing guitar rotues', function(){
     });
 
     it('should respond with 404 if a bad id is provided', function(done){
-      request.delete('localhost:9000/guitars/BADID')
+      request.delete('localhost:9000/owners/BADID')
       .end((err, res) => {
         expect(res.status).to.equal(404);
         done();
@@ -136,7 +144,7 @@ describe('testing guitar rotues', function(){
     });
 
     it('should respond with 404 if no id is provided', function(done){
-      request.delete('localhost:9000/guitars')
+      request.delete('localhost:9000/owners')
       .end((err, res) => {
         expect(res.status).to.equal(404);
         done();
