@@ -10,4 +10,4 @@ const eventSchema = Schema({
   values: [{ type: Schema.Types.ObjectId, ref: 'value'}],
 });
 
-module.exports = mongoose.model('event', eventSchema);
+module.exports = mongoose.model('events', eventSchema);
