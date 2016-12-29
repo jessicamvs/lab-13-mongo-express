@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const jsonParser = require('body-parser').json();
 const morgan = require('morgan');
 
-const MONGODB_URI = 'mongodb://jessica:yes@ds145178.mlab.com:45178/jessicas-books';
+const MONGODB_URI = process.env.MONGODB_URI;
 console.log(MONGODB_URI);
 const PORT = process.env.PORT || 3000;
 
