@@ -17,6 +17,9 @@ const bookRouter = require('./routes/book-routes.js');
 app.use(morgan('dev'));
 app.use(jsonParser);
 app.use('/api', bookRouter);
+// app.use('/', (err, req, res, next) => {
+//
+// })
 
 module.exports = app;
 
