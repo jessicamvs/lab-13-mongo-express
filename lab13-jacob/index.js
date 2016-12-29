@@ -5,7 +5,7 @@ let mongoose = require('mongoose');
 let jsonParser = require('body-parser').json();
 
 
-let MONGODB_URI = process.env.MONGODB_URI || 'mongodb://jisenber:Ji52617!@ds141128.mlab.com:41128/isenbergdb';
+let MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/fantasy';
 let PORT = process.env.PORT || 3000;
 console.log(MONGODB_URI);
 

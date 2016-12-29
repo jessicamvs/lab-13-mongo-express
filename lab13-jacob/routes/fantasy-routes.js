@@ -3,6 +3,7 @@
 let Router = require('express').Router;
 let jsonParser = require('body-parser').json();
 
+// let Player = require('../model/players')
 let League = require('../model/fantasy');
 let router = module.exports = new Router();
 
@@ -17,6 +18,10 @@ router.post('/leagues', jsonParser, (req, res, next) => {
   })
   .catch(next);
 });
+
+// router.post('/players', jsonParser, (req, res next) => {
+//   if (Object.keys(req.body).length)
+// })
 //when the router encounters a post request, parse the body, take the request, response and next operations. Make a new League with the body, then save it.
 
 router.get('/leagues/:id', (req, res, next) => {
