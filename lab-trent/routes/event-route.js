@@ -13,7 +13,7 @@ router.get('/events', function(req, res, next) {
 });
 
 router.get('/events/:id', function(req, res, next) {
-  Event.findById(req.params.id)
+  Event.findById(req.params.id).populate('values')
   .then(function(event) {
     if (event) {
       res.json(event);
