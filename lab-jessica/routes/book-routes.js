@@ -12,6 +12,7 @@ router.post('/books', (req, res) => {
       res.json(book);
     })
     .catch(err => {
+      console.error(err);
       res.status(400).send('bad request');
     });
 });
@@ -21,6 +22,7 @@ router.get('/books/:id', (req, res) => {
   Book.findById(req.params.id)
     .then(book => res.json(book))
     .catch(err => {
+      console.error(err);
       res.status(404).send('not found');
     });
 });
@@ -30,6 +32,7 @@ router.put('/books/:id', (req, res) => {
   Book.findOneAndUpdate({_id: req.params.id}, req.body, {new: true})
     .then(book => res.json(book))
     .catch(err => {
+      console.error(err);
       res.status(404).send('not found');
     });
 });
@@ -41,6 +44,7 @@ router.delete('/books/:id', (req, res) => {
       res.status(204).json(book);
     })
     .catch(err => {
+      console.error(err);
       res.status(404).send('not found');
     });
 });
