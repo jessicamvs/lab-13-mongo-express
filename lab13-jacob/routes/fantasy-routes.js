@@ -61,13 +61,11 @@ router.get('/players/:id/leagues', (req, res, next) => {
 });
 
 
-router.put('/leagues/:id', jsonParser, (req, res, next) => {
-  League.findById(req.params.id, function(err) {
-    if (err) {
-      res.status(404).end('not found');
-    }
-  })
+router.put('/leagues/:id', jsonParser, (req, res) => {
+  League.findById(req.params.id)
   .then(function(league) {
+    console.log('HERE I AM');
+    console.log(req.body);
     if(!req.body.leagueName) {
       res.status(400).end('bad request');
     } else {
@@ -80,7 +78,11 @@ router.put('/leagues/:id', jsonParser, (req, res, next) => {
       });
     }
   })
-  .catch(next);
+  .catch(function(err) {
+    if(err) {
+      res.status(404).end('not found');
+    }
+  });
 });
 
 router.put('/players/:id', jsonParser, (req, res) => {
