@@ -1,4 +1,3 @@
-let Guitar = require('../model/guitars.js');
 let Owner = require('../model/owners.js');
 let Router = require('express').Router;
 let router = module.exports = new Router();
@@ -6,62 +5,33 @@ let jsonParser = require('body-parser').json();
 let createError = require('http-errors');
 
 
-router.get('/guitars/:id', (req, res, next) => {
-  Guitar.findById(req.params.id)
-    .then(guitar => res.json(guitar))
-    .catch(next);
+router.get('/owners/:id', (req, res, next) => {
+  Owner.findById(req.params.id)
+    .populate('guitar')
+    .then(owner => res.json(owner))
+    .catch(err => next(createError(404, 'Not Found')));
 });
 
 
-router.post('/guitars', jsonParser, function(req, res, next) {
-  new Guitar(req.body).save()
-  .then(guitar => res.json(guitar))
+router.post('/owners', jsonParser, function(req, res, next) {
+  new Owner(req.body).save()
+  .then(owner => res.json(owner))
   .catch(next);
 });
 
 
-router.put('/guitars/:id', function(req, res, next){
-  Guitar.findByIdAndUpdate(req.params.id, req.body, {new: true})
-  .then(guitar => res.json(guitar))
+router.put('/owners/:id', function(req, res, next){
+  Owner.findByIdAndUpdate(req.params.id, req.body, {new: true})
+  .then(owner => res.json(owner))
   .catch(err => {
     if(err.name === 'ValidationError') return next(err);
-    next(createError(404, err.message));
+    next(createError(404, 'Not Found'));
   });
 });
-//   .then(function(axe){
-//     Guitar.update({make: axe.make}, function(err){
-//       if(err){
-//         console.error(err);
-//       }
-//       console.log('updated the axe');
-//       res.status(200).end('guitar updated');
-//     });
-//   })
-//   .catch(next);
-// });
 
 
-router.delete('/guitars/:id', function(req, res, next){
-  Guitar.findByIdAndRemove(req.params.id)
+router.delete('/owners/:id', function(req, res, next){
+  Owner.findByIdAndRemove(req.params.id)
   .then( () => res.status(204).send())
-  .catch(err => next(createError(404, err.message)));
+  .catch(err => next(createError(404, 'Not Found')));
 });
-
-// router.delete('/guitars/:id', function(req, res, next){
-//   Guitar.findByIdAndRemove(req.params.id)
-//   .then(() => res.status(204).send())
-//   .catch(err => next(createError((404, err.message)))
-// });
-//     // Guitar.remove({make: axe.make}, function(err){
-//     //   if(err){
-//     //     console.error(err);
-//     //   }
-//     //   console.log('deleted the axe');
-//     //   res.status(204).end();
-//     // })
-//     // .catch(err => {
-//     //   console.error('did not delete');
-//     //   res.status(404);
-//     //   res.json({msg: 'Not Found'});
-//     // });
-// });

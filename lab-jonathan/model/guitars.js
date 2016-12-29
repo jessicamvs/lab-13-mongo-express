@@ -7,10 +7,10 @@ let Owner = require('./owners.js');
 let guitarSchema = Schema({
   make: {type: String, required: true},
   model: {type: String, required: true},
-  guitar: [{type: Schema.Types.ObjectID, ref: 'guitar'}],
+  listID: [{type: Schema.Types.ObjectId, ref: 'owners'}], 
 });
 
-let Guitar = module.exports = mongoose.model('guitar', guitarSchema);
+let Guitar = module.exports = mongoose.model('guitars', guitarSchema);
 
 Guitar.findByIdAndAddGuitar = function(id, guitar){
   return Guitar.findById(id)
