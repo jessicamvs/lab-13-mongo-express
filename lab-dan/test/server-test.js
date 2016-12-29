@@ -5,6 +5,7 @@ const expect = require('chai').expect
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 const ObjectId = require('mongoose').Types.ObjectId
+const Dog = require('../model/dog')
 
 chai.use(chaiHttp)
 
@@ -134,8 +135,11 @@ describe('Dog API', function() {
 
   after(function(done){
     server.close(function(){
-      console.log('server shut down')
-      done()
+      console.log('server shut down. Now clearing db.')
+      Dog.remove({}, function(){
+        console.log('Db cleared.')
+        done()
+      })
     })
   })
 
