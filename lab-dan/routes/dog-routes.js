@@ -1,6 +1,5 @@
 'use strict'
 
-const responseHandler = require('../lib/responseHandler')
 const Dog = require('../model/dog')
 const ObjectId = require('mongoose').Types.ObjectId
 
@@ -9,65 +8,65 @@ module.exports = (router) => {
   // router expects 3 different things: verb, route, and callback
   // one callback per verb/route combo
   router.get('/', function(request, response) {
-    responseHandler.sendText(response, 200, 'Hello, world! This is the amazing dogs api\n')
+    response.status(200).send('Hello, world! This is the amazing dogs api\n')
   })
 
   router.get('/dogs/all', function(request, response) {
     Dog.find()
       .then(data => {
-        responseHandler.sendJSON(response, 200, data)
+        response.status(200).json(data)
       })
       .catch(err => {
-        responseHandler.sendText(response, 400, err)
+        response.status(400).send(err)
       })
   })
 
   router.get('/dogs/:id', function(request, response) {
     if (!ObjectId.isValid(request.params.id)) {
-      return responseHandler.sendText(response, 422, 'invalid object')
+      return response.status(422).send('invalid object')
     }
     Dog.findById(request.params.id)
       .then(data => {
-        responseHandler.sendJSON(response, 200, data)
+        response.status(200).json(data)
       })
       .catch(() => {
-        responseHandler.sendText(response, 404, 'not found')
+        response.status(404).send('not found')
       })
   })
 
   router.post('/dogs', function(request, response) {
     new Dog(request.body).save()
       .then(data => {
-        responseHandler.sendJSON(response, 201, data)
+        response.status(201).json(data)
       })
       .catch(() => {
-        responseHandler.sendText(response, 400, 'bad request')
+        response.status(400).send('bad request')
       })
   })
 
   router.put('/dogs', function(request, response) {
     if (!ObjectId.isValid(request.body.id)) {
-      return responseHandler.sendText(response, 404, 'invalid object')
+      return response.status(404).send('invalid object')
     }
     Dog.findByIdAndUpdate(request.body.id, request.body, {upsert: true, new: true})
       .then(data => {
-        responseHandler.sendJSON(response, 200, data)
+        response.status(200).json(data)
       })
       .catch(() => {
-        responseHandler.sendText(response, 404, 'not found')
+        response.status(404).send('not found')
       })
   })
 
   router.delete('/dogs/:id', function(request, response) {
     if (!ObjectId.isValid(request.params.id)) {
-      return responseHandler.sendText(response, 422, 'invalid object')
+      return response.status(422).send('invalid object')
     }
     Dog.findByIdAndRemove(request.params.id)
       .then(() => {
-        responseHandler.sendText(response, 204)
+        response.status(204).send()
       })
       .catch(err => {
-        responseHandler.sendText(response, 404, err)
+        response.status(404).send(err)
       })
   })
 }
