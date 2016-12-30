@@ -14,12 +14,12 @@ mongoose.connect(MONGODB_URI);
 
 const app = express();
 const bookRouter = require('./routes/book-routes.js');
-const authorRouter = require('./models/author.js');
+const authorRouter = require('./routes/author-routes.js');
 
 app.use(morgan('dev'));
 app.use(jsonParser);
-app.use('/api', bookRouter);
 app.use('/api', authorRouter);
+app.use('/api', bookRouter);
 
 module.exports = app;
 

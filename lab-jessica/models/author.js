@@ -3,11 +3,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const Book = require('./book.js');
+// const Book = require('./book.js');
 
 let authorSchema = Schema({
   name: {type: String, required: true},
-  book: [{type: Schema.Types.ObjectId, ref: 'Book', required: true}]
+  books: [{type: Schema.Types.ObjectId, ref: 'Book'}]
 });
 
-module.exports = mongoose.model('author', authorSchema);
+module.exports = mongoose.model('Author', authorSchema);

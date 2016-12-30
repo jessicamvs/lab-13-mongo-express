@@ -2,11 +2,11 @@
 
 const request = require('superagent');
 const expect = require('chai').expect;
-const Book = require('../models/book.js');
+const Author = require('../models/author.js');
 const app = require('../index.js');
 const PORT = process.env.PORT || 3000;
 
-describe('testing book routes', function() {
+describe('testing author routes', function() {
 
   let server;
 
@@ -14,10 +14,9 @@ describe('testing book routes', function() {
     server = app.listen(PORT, function() {
       console.log('started server from tests');
     });
-    new Book({title: 'TEST TITLE', author: 'TEST AUTHOR'}).save()
-      .then(exampleBook => {
-        console.log('exampleBook', exampleBook);
-        this.exampleBook = exampleBook;
+    new Author({name: 'TEST author'}).save()
+      .then(exampleAuthor => {
+        this.exampleAuthor = exampleAuthor;
       })
       .then( () => done())
       .catch(done);
@@ -35,24 +34,23 @@ describe('testing book routes', function() {
 
   });
 
-  describe('testing POST /api/books', function() {
+  describe('testing POST /api/authors', function() {
 
     // POST - test 200, response body like {<data>} for a post request with a valid body
-    it('should return a book', function(done) {
-      request.post('localhost:3000/api/books')
-      .send({title: 'BOOK NAME', author: 'AUTHOR NAME'})
+    it('should return an author', function(done) {
+      request.post('localhost:3000/api/authors')
+      .send({name: 'Author NAME'})
       .end((err, res) => {
         if (err) return done(err);
         expect(res.status).to.equal(200);
-        expect(res.body.title).to.equal('BOOK NAME');
-        expect(res.body.author).to.equal('AUTHOR NAME');
+        expect(res.body.name).to.equal('Author NAME');
         done();
       });
     });
 
     // POST - test 400, responds with 'bad request' if no body provided
     it('should respond with 400 error if no body is provided', function(done) {
-      request.post('localhost:3000/api/books')
+      request.post('localhost:3000/api/authors')
       .end((err, res) => {
         expect(res.status).to.equal(400);
         expect(res.text).to.equal('bad request');
@@ -62,7 +60,7 @@ describe('testing book routes', function() {
 
     // POST - test 400, responds with 'bad request' if invalid body provided
     it('should respond with 400 error if invalid body is provided', function(done) {
-      request.post('localhost:3000/api/books')
+      request.post('localhost:3000/api/authors')
       .send('lolololololol')
       .end((err, res) => {
         expect(res.status).to.equal(400);
@@ -73,23 +71,22 @@ describe('testing book routes', function() {
 
   });
 
-  describe('testing GET /api/books', function() {
+  describe('testing GET /api/authors', function() {
 
     // GET - test 200, response body like {<data>} for a request made with a valid id
     it('should return a book given an id', function(done) {
-      request.get(`localhost:3000/api/books/${this.exampleBook._id}`)
+      request.get(`localhost:3000/api/authors/${this.exampleAuthor._id}`)
       .end((err, res) => {
         if (err) return done(err);
         expect(res.status).to.equal(200);
-        expect(res.body.title).to.equal(`${this.exampleBook.title}`);
-        expect(res.body.author).to.equal(`${this.exampleBook.author}`);
+        expect(res.body.name).to.equal(`${this.exampleAuthor.name}`);
         done();
       });
     });
 
     // GET - test 404, responds with 'not found' for valid request made with an id that was not found
     it('should return 404 for valid req with an id that was not found', function(done) {
-      request.get('localhost:3000/api/books/6789')
+      request.get('localhost:3000/api/authors/6789')
       .end((err, res) => {
         expect(res.status).to.equal(404);
         expect(res.text).to.equal('not found');
@@ -99,45 +96,42 @@ describe('testing book routes', function() {
 
   });
 
-  describe('testing PUT /api/books', function() {
+  describe('testing PUT /api/authors', function() {
 
     // PUT - test 200, response body like {<data>} for a post request with a valid body
     it('should respond with 200 for a put with a valid body and should change document', function(done) {
-      request.put(`localhost:3000/api/books/${this.exampleBook._id}`)
-      .send({title: 'CHANGED TITLE', author: 'CHANGED AUTHOR'})
+      request.put(`localhost:3000/api/authors/${this.exampleAuthor._id}`)
+      .send({name: 'CHANGED Author'})
       .end((err, res) => {
         expect(res.status).to.equal(200);
-        expect(res.body.title).to.equal('CHANGED TITLE');
-        expect(res.body.author).to.equal('CHANGED AUTHOR');
+        expect(res.body.name).to.equal('CHANGED Author');
         done();
       });
     });
 
     // PUT - test 400, responds with 'bad request' for no body provided
     it('should respond with 200 even if no body is provided', function(done) {
-      request.put(`localhost:3000/api/books/${this.exampleBook._id}`)
+      request.put(`localhost:3000/api/authors/${this.exampleAuthor._id}`)
       .end((err, res) => {
         expect(res.status).to.equal(200);
-        // expect(res.text).to.equal('bad request');
         done();
       });
     });
 
     // PUT - test 400, responds with 'bad request' for invalid body
     it('should respond with 400 along with \'bad request\' if invalid body provided', function(done) {
-      request.put(`localhost:3000/api/books/${this.exampleBook._id}`)
+      request.put(`localhost:3000/api/authors/${this.exampleAuthor._id}`)
       .send('lololol')
       .end((err, res) => {
         expect(res.status).to.equal(200);
-        // expect(res.text).to.equal('bad request');
         done();
       });
     });
 
     // PUT - test 404, responds with 'not found' for valid request made with an id that was not found
     it('should respond with 404 for valid request with an id that was not found', function(done) {
-      request.put('localhost:3000/api/books/2')
-      .send({title: 'CHANGED TITLE', author: 'CHANGED AUTHOR'})
+      request.put('localhost:3000/api/authors/2')
+      .send({name: 'CHANGED AUTHOR'})
       .end((err, res) => {
         expect(res.status).to.equal(404);
         expect(res.text).to.equal('not found');
@@ -147,11 +141,11 @@ describe('testing book routes', function() {
 
   });
 
-  describe('testing DELETE /api/books/:id', function() {
+  describe('testing DELETE /api/authors/:id', function() {
 
   // DELETE - test 204, with no body, for a request with a valid id
     it('should respond with 204 with no content in the body when passed a valid id', function(done) {
-      request.delete(`localhost:3000/api/books/${this.exampleBook._id}`)
+      request.delete(`localhost:3000/api/authors/${this.exampleAuthor._id}`)
       .end((err, res) => {
         expect(res.status).to.equal(204);
         expect(res.body).to.deep.equal({});
@@ -161,7 +155,7 @@ describe('testing book routes', function() {
 
   // DELETE - test 404, responds with 'not found' for valid request made with an id that was not found
     it('should respond with 404 along with \'not found\' for valid req with an id that was not found', function(done) {
-      request.delete('localhost:3000/api/books/7')
+      request.delete('localhost:3000/api/authors/7')
       .end((err, res) => {
         expect(res.status).to.equal(404);
         expect(res.text).to.equal('not found');
