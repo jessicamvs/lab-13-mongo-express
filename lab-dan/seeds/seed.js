@@ -3,7 +3,7 @@
 const Owner = require('../model/owner.js')
 const Dog = require('../model/dog.js')
 
-let testOwners = [
+let seedOwnersAndPets = [
   {
     name: 'Dave',
     pets: [
@@ -32,7 +32,7 @@ Dog
     Owner
       .remove({})
       .then(() => {
-        let ownerNames = testOwners.map(owner => {
+        let ownerNames = seedOwnersAndPets.map(owner => {
           return {name: owner.name}
         })
         Owner
@@ -40,8 +40,10 @@ Dog
           .then(owners => {
             console.log(owners)
             let i = 0
+            // for each owner, create pets
             owners.forEach(owner => {
-              let pets = testOwners[i].pets.map(pet => {
+              console.log('now creating pets for', owner)
+              let pets = seedOwnersAndPets[i].pets.map(pet => {
                 return {
                   name: pet.name,
                   breed: pet.breed,
@@ -52,10 +54,13 @@ Dog
               Dog
                 .create(pets)
                 .then(pets => {
+                  console.log(pets)
+                  // push pets id to owner
                   pets.forEach(pet => {
+                    console.log(`saving pet id to owner: ${owner._id} ${pet._id}`)
                     owner.pets.push(pet._id)
-                    owner.save()
                   })
+                  owner.save()
                 })
                 .catch(err => console.error(err))
             })
