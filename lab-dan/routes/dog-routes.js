@@ -11,8 +11,9 @@ module.exports = (router) => {
     response.status(200).send('Hello, world! This is the amazing dogs api\n').end('\n')
   })
 
-  router.get('/dogs/all', function(request, response, next) {
+  router.get('/dogs', function(request, response, next) {
     Dog.find()
+      .populate('owner')
       .then(data => {
         response.status(200).json(data).end('\n')
       })
@@ -24,6 +25,7 @@ module.exports = (router) => {
       return response.status(422).send('invalid object').end('\n')
     }
     Dog.findById(request.params.id)
+      .populate('owner')
       .then(data => {
         response.status(200).json(data).end('\n')
       })

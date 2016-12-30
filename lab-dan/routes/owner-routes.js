@@ -8,8 +8,9 @@ module.exports = (router) => {
   // router expects 3 different things: verb, route, and callback
   // one callback per verb/route combo
 
-  router.get('/owners/all', function(request, response, next) {
+  router.get('/owners', function(request, response, next) {
     Owner.find()
+      .populate('pets')
       .then(data => {
         response.status(200).json(data)
       })
@@ -21,22 +22,11 @@ module.exports = (router) => {
       return response.status(422).send('invalid object')
     }
     Owner.findById(request.params.id)
+      .populate('pets')
       .then(data => {
         response.status(200).json(data)
       })
       .catch(next)
-  })
-
-  router.get('/owners/:id/dogs', function(request, response, next) {
-    if (!ObjectId.isValid(request.params.id)) {
-      return response.status(422).send('invalid object')
-    }
-    Owner.findById(request.params.id)
-      .populate('pets')
-      .exec((err, owner) => {
-        if (err) next(err)
-        response.json(owner)
-      })
   })
 
   router.post('/owners', function(request, response, next) {

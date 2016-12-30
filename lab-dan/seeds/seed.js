@@ -38,11 +38,9 @@ Dog
         Owner
           .create(ownerNames)
           .then(owners => {
-            console.log(owners)
             let i = 0
             // for each owner, create pets
             owners.forEach(owner => {
-              console.log('now creating pets for', owner)
               let pets = seedOwnersAndPets[i].pets.map(pet => {
                 return {
                   name: pet.name,
@@ -54,10 +52,8 @@ Dog
               Dog
                 .create(pets)
                 .then(pets => {
-                  console.log(pets)
                   // push pets id to owner
                   pets.forEach(pet => {
-                    console.log(`saving pet id to owner: ${owner._id} ${pet._id}`)
                     owner.pets.push(pet._id)
                   })
                   owner.save()
