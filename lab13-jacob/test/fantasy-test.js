@@ -3,11 +3,11 @@
 let expect = require('chai').expect;
 let request = require('superagent');
 let mongoose = require('mongoose');
-let league = require('../model/fantasy')
+let league = require('../model/fantasy');
 
 let seeds = function() {
-  require('../seeds/seeds')
-}
+  require('../seeds/seeds');
+};
 
 describe('our server', function() {
   let server = undefined;
@@ -20,17 +20,15 @@ describe('our server', function() {
     done();
   });
   describe('my fantasy football API that uses mongoDB to store league information', function() {
-    this.timeout(5000)
+    this.timeout(5000);
     describe('the Leagues route', function () {
       describe('the POST route', function() {
         it('should post an instance of a league with a leaguename property if given a valid input', function(done) {
           request.post('http://localhost:3000/leagues')
           .send({leagueName: 'Test League'})
           .end((err, res) => {
-            console.log(err);
             if (err) return done(err);
             expect(res.status).to.equal(200);
-            console.log(res.body);
             expect(res.body.leagueName).to.equal('Test League');
             request.delete(`http://localhost:3000/leagues${res.body._id}`);
             done();
@@ -58,7 +56,7 @@ describe('our server', function() {
       describe('the GET route', function() {
         it('should retrieve information from mongoDB based on express params', function(done) {
           league.findOne({}, function(err, docs) {
-            console.log(docs);
+            return docs;
           })
           .then(docs => {
             request.get(`http://localhost:3000/leagues/${docs._id}`)
@@ -68,7 +66,7 @@ describe('our server', function() {
               expect(res.status).to.equal(200);
               expect(leagueObj.leagueName).to.equal('Winning League');
               done();
-            })
+            });
           });
         });
         it('should return a 404 error if a get request is made on a valid route but there is no matching field', function(done) {
@@ -83,7 +81,7 @@ describe('our server', function() {
       describe('the PUT request', function() {
         it('should update the name of an existing resource in the database if given a valid request', function(done) {
           league.findOne({}, function(err, docs) { //get the newly created object
-            console.log(docs); //gotta pass lint!
+            return docs; //gotta pass lint!
           }) //do nuthin'
           .then(docs => { //take the object and its properties
             request.put(`http://localhost:3000/leagues/${docs._id}`) //inject into URL
@@ -92,9 +90,9 @@ describe('our server', function() {
               expect(res.status).to.equal(200);
               expect(res.body.leagueName).to.equal('Winning League'); //it really does change I swear
               done();
-              });
             });
           });
+        });
         it('should return a 404 error if a valid put request is made on a nonexisting resource', function(done) {
           request.put('http://localhost:3000/leagues/cheese')
           .send({leagueName: 'Cheddar League'})
@@ -106,7 +104,7 @@ describe('our server', function() {
         });
         it('should return a 400 error if an invalid input is made on a valid existing resource', function(done) {
           league.findOne({}, function(err, docs) { //get the newly created object
-            console.log(docs); //gotta pass lint!
+            return docs; //do nuthin and pass lint.
           })
           .then(docs => {
             request.put(`http://localhost:3000/leagues/${docs._id}`)
@@ -118,7 +116,7 @@ describe('our server', function() {
             });
           });
         });
-     });
+      });
       describe('the DELETE request', function() {
         it('should delete an existing resource if given a valid input', function(done) {
           request.post('http://localhost:3000/leagues')
@@ -199,14 +197,54 @@ describe('our server', function() {
            expect(res.status).to.equal(400);
            expect(res.text).to.equal('bad request');
            done();
-          });
          });
-       });
-     });
-   });
-   after(function(done) {
-     mongoose.connection.db.dropCollection('leagues');
-     mongoose.connection.db.dropCollection('players');
-     done();
+        });
+      });
+      describe('the GET request', function() {
+        it('should inform how many leagues any given player belongs to and then print those leagues', function(done) {
+          league.findOne({}, function(err, docs) { //get the newly created object
+            return docs; //gotta pass lint!
+          })
+          .then(docs => {
+            request.get('http://localhost:3000/players/1/leagues')
+            .end((err, res) => {
+              expect(res.status).to.equal(200); //I know below looks silly.. but it proves it works!
+              expect(res.text).to.equal(`Jacob Isenberg belongs to 1 leagues: { _id: ${docs._id},` + ` leagueName: '${docs.leagueName}' }`);
+              done();
+            });
+          });
+        });
+        it('should return a 404 not found error if a valid request is made on a resource that does not exist', function(done){
+          request.get('http://localhost:3000/players/50/leagues')
+          .end((err, res) => {
+            expect(res.status).to.equal(404);
+            expect(res.text).to.equal('Player not found');
+            done();
+          });
+        });
+      });
+      describe('the DELETE request', function() {
+        it('should delete an existing resource if given a valid request', function(done) {
+          request.delete('http://localhost:3000/players/2') //sorry scott
+          .end((err, res) => {
+            expect(res.status).to.equal(204);
+            done();
+          });
+        });
+        it('should respond with a 404 not found error if a delete request is made on a nonexisting resource', function(done) {
+          request.delete('http://localhost:3000/players/50')
+          .end((err, res) => {
+            expect(res.status).to.equal(404);
+            expect(res.text).to.equal('Player not found');
+            done();
+          });
+        });
+      });
+    });
+  });
+  after(function(done) {
+    mongoose.connection.db.dropCollection('leagues');
+    mongoose.connection.db.dropCollection('players');
+    done();
   });
 });

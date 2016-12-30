@@ -32,22 +32,18 @@ router.post('/players', jsonParser, (req, res, next) => {
   .catch(next);
 });
 
-router.get('/leagues/:id', (req, res, next) => {
-  League.findById(req.params.id, function(err) {
+router.get('/leagues/:id', (req, res) => {
+  League.findById(req.params.id)
+  .then(league => res.status(200).json(league))
+  .catch(function(err) {
     if(err) {
       res.status(404).end('ID not found');
     }
-  })//database read
-  .then(league => res.status(200).json(league))
-  .catch(next);
+  });
 });
 
-router.get('/players/:id/leagues', (req, res, next) => {
-  Player.findById(req.params.id, function(err) {
-    if (err) {
-      res.status(404).end('ID not found');
-    }
-  })
+router.get('/players/:id/leagues', (req, res) => {
+  Player.findById(req.params.id)
   .populate({
     path: 'leagues', select: 'leagueName'})
   .then(function(leagues, err) {
@@ -55,17 +51,19 @@ router.get('/players/:id/leagues', (req, res, next) => {
       console.error(err);
       res.end();
     }
-    res.end(`${leagues.name} belongs to ${leagues.leagues.length} leagues: \n ${leagues.leagues}`);
+    res.end(`${leagues.name} belongs to ${leagues.leagues.length} leagues: ${leagues.leagues}`);
   })
-  .catch(next);
+  .catch(function(err) {
+    if (err) {
+      res.status(404).end('Player not found');
+    }
+  });
 });
 
 
 router.put('/leagues/:id', jsonParser, (req, res) => {
   League.findById(req.params.id)
   .then(function(league) {
-    console.log('HERE I AM');
-    console.log(req.body);
     if(!req.body.leagueName) {
       res.status(400).end('bad request');
     } else {
@@ -115,24 +113,22 @@ router.put('/players/:id', jsonParser, (req, res) => {
   });
 });
 
-router.delete('/players/:id', (req, res, next) => {
-  Player.findById(req.params.id, err => {
-    if(err) {
-      res.status(404).end('not found');
-      return;
-    }
-  })
+router.delete('/players/:id', (req, res) => {
+  Player.findById(req.params.id)
   .then(function(player) {
     player.remove({_id: player._id}, function(err) {
       if(err) {
-        console.error(err);
         res.status(404).end('not found');
         return;
       }
       res.status(204).end();
     });
   })
-  .catch(next);
+  .catch(function(err) {
+    if(err) {
+      res.status(404).end('Player not found');
+    }
+  });
 });
 
 router.delete('/leagues/:id', (req, res, next) => {
@@ -145,7 +141,6 @@ router.delete('/leagues/:id', (req, res, next) => {
   .then(function(league) {
     league.remove({leagueName: league.leagueName}, function(err) {
       if(err) {
-        console.error(err);
         res.status(404).end('not found');
         return;
       }
