@@ -17,12 +17,6 @@ router.post('/authors', (req, res) => {
     });
 });
 
-
-
-
-
-
-
 //  * pass the id of a resource though the url endpoint to `req.params` to fetch a model
 // WILL NEED TO ADD POPULATE HERE
 router.get('/authors/:id', (req, res) => {
@@ -33,16 +27,6 @@ router.get('/authors/:id', (req, res) => {
       res.status(404).send('not found');
     });
 });
-
-
-
-
-
-
-
-
-
-
 
 //  * pass data as stringified json in the body of a put request to update a resource
 router.put('/authors/:id', (req, res) => {
