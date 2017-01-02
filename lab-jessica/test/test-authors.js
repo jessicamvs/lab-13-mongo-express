@@ -12,13 +12,13 @@ describe('testing author routes', function() {
 
   before(function(done){
     server = app.listen(PORT, function() {
-      console.log('started server from tests');
+      console.log('started server from author tests');
     });
     new Author({name: 'TEST author'}).save()
       .then(exampleAuthor => {
         this.exampleAuthor = exampleAuthor;
       })
-      .then( () => done())
+      .then(() => done())
       .catch(done);
   });
 
@@ -171,7 +171,7 @@ describe('testing author routes', function() {
         .then(author => {
           console.log('Deleted', author);
         });
-      console.log('server closed after tests');
+      console.log('server closed after author tests');
     });
     done();
   });
