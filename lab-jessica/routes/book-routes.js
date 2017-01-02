@@ -28,10 +28,10 @@ router.post('/authors/:authorId/books', (req, res) => {
 //  * pass the id of a resource through the url endpoint to `req.params` to fetch a model
 router.get('/books/:bookId', (req, res) => {
   Book.findById(req.params.bookId)
-    .then(book => res.json(book))
-    .catch(err => {
-      console.error(err);
-      res.status(404).send('not found');
+    .populate('authorID')
+    .exec((err, book) => {
+      if (err) return res.status(404).send('not found' + '\n');
+      res.json(book);
     });
 });
 

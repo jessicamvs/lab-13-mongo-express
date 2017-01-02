@@ -74,7 +74,7 @@ describe('testing author routes', function() {
   describe('testing GET /api/authors', function() {
 
     // GET - test 200, response body like {<data>} for a request made with a valid id
-    it('should return a book given an id', function(done) {
+    it('should return an author given an id', function(done) {
       request.get(`localhost:3000/api/authors/${this.exampleAuthor._id}`)
       .end((err, res) => {
         if (err) return done(err);
@@ -89,7 +89,7 @@ describe('testing author routes', function() {
       request.get('localhost:3000/api/authors/6789')
       .end((err, res) => {
         expect(res.status).to.equal(404);
-        expect(res.text).to.equal('not found');
+        expect(res.text).to.equal('not found' + '\n');
         done();
       });
     });
@@ -167,6 +167,10 @@ describe('testing author routes', function() {
 
   after(function(done) {
     server.close(function() {
+      Author.remove({name: 'Author NAME'})
+        .then(author => {
+          console.log('Deleted', author);
+        });
       console.log('server closed after tests');
     });
     done();
