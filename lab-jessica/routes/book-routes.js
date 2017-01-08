@@ -17,6 +17,15 @@ router.post('/books', (req, res) => {
     });
 });
 
+router.get('/books', (req, res) => {
+  Book.find()
+    .then(books => res.json(books))
+    .catch(err => {
+      console.log(err);
+      res.status(400);
+    });
+});
+
 //  * pass the id of a resource though the url endpoint to `req.params` to fetch a model
 router.get('/books/:id', (req, res) => {
   Book.findById(req.params.id)
