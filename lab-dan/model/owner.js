@@ -25,9 +25,11 @@ module.exports = mongoose.model('owner', ownerSchema)
 
 // this event listener removes all related dogs when an owner is deleted, like SQL cascade delete
 ownerSchema.pre('remove', function (next) {
-  Dog.remove({owner: this._id})
-  .then(() => next())
-  .catch(next)
+  if (this.pets.length) {
+    Dog.remove({owner: this._id})
+    .then(() => next())
+    .catch(next)
+  }
 })
 
 const Dog = require ('./dog')

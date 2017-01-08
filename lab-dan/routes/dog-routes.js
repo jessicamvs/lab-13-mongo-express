@@ -1,16 +1,13 @@
 'use strict'
 
 const Dog = require('../model/dog')
+const Owner = require('../model/owner')
 const ObjectId = require('mongoose').Types.ObjectId
 
 module.exports = (router) => {
 
   // router expects 3 different things: verb, route, and callback
   // one callback per verb/route combo
-  router.get('/', function(request, response) {
-    response.status(200).json('Hello, world! This is the amazing dogs api\n')
-  })
-
   router.get('/dogs', function(request, response, next) {
     Dog.find()
       .populate('owner')
@@ -40,7 +37,10 @@ module.exports = (router) => {
 
     new Dog(request.body).save()
     .then(data => {
-      response.status(201).json(data)
+      Owner
+        .findByIdAndUpdate(data.owner, {$push : {pets: data._id}})
+        .then(() => response.status(201).json(data))
+        .catch(next)
     })
     .catch(next)
   })
@@ -62,10 +62,14 @@ module.exports = (router) => {
     }
     Dog.findById(request.params.id)
       .then(doc => {
-        doc
+        if (doc) {
+          doc
           .remove()
           .then(() => response.status(204).json())
           .catch(next)
+        } else {
+          next()
+        }
       })
       .catch(next)
   })

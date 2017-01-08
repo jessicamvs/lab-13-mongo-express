@@ -30,10 +30,6 @@ module.exports = (router) => {
   })
 
   router.post('/owners', function(request, response, next) {
-    if (!ObjectId.isValid(request.body.id)) {
-      return response.status(422).json({error: 'invalid object'})
-    }
-
     new Owner(request.body).save()
     .then(data => {
       response.status(201).json(data)

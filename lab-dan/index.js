@@ -17,6 +17,10 @@ mongoose.connect(MONGO_URI).then(() => require('./seeds/seed'))
 require('./routes/dog-routes')(router)
 require('./routes/owner-routes')(router)
 
+router.get('/', function(request, response) {
+  response.status(200).json({msg: 'Hello, world! This is the amazing owner & dogs api'})
+})
+
 app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(router)
