@@ -1,22 +1,25 @@
 'use strict'
 
-// const fetch = require('fetch')
 const expect = require('chai').expect
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 const ObjectId = require('mongoose').Types.ObjectId
-const Dog = require('../model/dog')
+
+const app = require('../index.js')
+let server = undefined
 
 chai.use(chaiHttp)
 
-const app = require('../index.js')
-const server = app.listen(3000, () => {
-  console.log('Test Server started on port 3000')
-})
-
-describe('Dog API', function() {
+describe('Dog API - dog & owner routes', function() {
   let testID1 = ''
   let testID2 = ''
+
+  before(function(done) {
+    server = app.listen(3000, () => {
+      console.log('Test Server started on port 3000')
+      done()
+    })
+  })
 
   it('should get a 200 response with a correct object for a GET request to \'/\'', function(done) {
     chai.request(app)
@@ -28,14 +31,24 @@ describe('Dog API', function() {
       })
   })
 
-  it('should get a 200 response with seeds for a GET request to dogs/all', function(done) {
+  it('should get a 200 response with seeds for a GET request to /dogs', function(done) {
     chai.request(app)
-      .get('/dogs/all')
+      .get('/dogs')
+      .end(function(err, res) {
+        let data = JSON.parse(res.text)
+        expect(res).to.have.status(200)
+        expect(data.length).to.be.equal(6)
+        done()
+      })
+  })
+
+  it('should get a 200 response with seeds for a GET request to /owners', function(done) {
+    chai.request(app)
+      .get('/owners')
       .end(function(err, res) {
         let data = JSON.parse(res.text)
         expect(res).to.have.status(200)
         expect(data.length).to.be.equal(3)
-        expect(data[0].breed).to.be.equal('testBreed')
         done()
       })
   })
@@ -43,6 +56,16 @@ describe('Dog API', function() {
   it('should get a 422 response for a GET request to \'/dogs/improperid\'', function(done) {
     chai.request(app)
       .get('/dogs/improperid')
+      .end(function(err, res) {
+        expect(res).to.have.status(422)
+        expect(res.text).to.be.equal('invalid object')
+        done()
+      })
+  })
+
+  it('should get a 422 response for a GET request to \'/owners/improperid\'', function(done) {
+    chai.request(app)
+      .get('/owners/improperid')
       .end(function(err, res) {
         expect(res).to.have.status(422)
         expect(res.text).to.be.equal('invalid object')
@@ -147,11 +170,8 @@ describe('Dog API', function() {
 
   after(function(done){
     server.close(function(){
-      console.log('server shut down. Now clearing db.')
-      Dog.remove({}, function(){
-        console.log('Db cleared.')
-        done()
-      })
+      console.log('server shut down.')
+      done()
     })
   })
 

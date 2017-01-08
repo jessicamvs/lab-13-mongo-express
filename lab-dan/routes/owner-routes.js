@@ -19,7 +19,7 @@ module.exports = (router) => {
 
   router.get('/owners/:id', function(request, response, next) {
     if (!ObjectId.isValid(request.params.id)) {
-      return response.status(422).send('invalid object')
+      return response.status(422).json({error: 'invalid object'})
     }
     Owner.findById(request.params.id)
       .populate('pets')
@@ -31,7 +31,7 @@ module.exports = (router) => {
 
   router.post('/owners', function(request, response, next) {
     if (!ObjectId.isValid(request.body.id)) {
-      return response.status(422).send('invalid object')
+      return response.status(422).json({error: 'invalid object'})
     }
 
     new Owner(request.body).save()
@@ -43,7 +43,7 @@ module.exports = (router) => {
 
   router.put('/owners', function(request, response, next) {
     if (!ObjectId.isValid(request.body.id)) {
-      return response.status(404).send('invalid object')
+      return response.status(404).json({error: 'invalid object'})
     }
     Owner.findByIdAndUpdate(request.body.id, request.body, {upsert: true, new: true})
       .then(data => {
@@ -54,11 +54,14 @@ module.exports = (router) => {
 
   router.delete('/owners/:id', function(request, response, next) {
     if (!ObjectId.isValid(request.params.id)) {
-      return response.status(422).send('invalid object')
+      return response.status(422).json({error: 'invalid object'})
     }
-    Owner.findByIdAndRemove(request.params.id)
-      .then(() => {
-        response.status(204).send()
+    Owner.findById(request.params.id)
+      .then(doc => {
+        doc
+          .remove()
+          .then(() => response.status(204).json())
+          .catch(next)
       })
       .catch(next)
   })
