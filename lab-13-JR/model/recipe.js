@@ -9,8 +9,9 @@ const Schema = mongoose.Schema;
 const recipeSchema = Schema({
   name: {type: String, required: true}, //name property and type string;
   //name is REQUIRED since we made it required.
-  ingredients: String,
+  region: String,
   // id: ObjectId(),
+  ingredientsRef: [{type: mongoose.Schema.ObjectId, ref: 'ingredient'}]
 });
 
 module.exports = mongoose.model('recipe', recipeSchema);
