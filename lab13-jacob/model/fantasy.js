@@ -5,9 +5,7 @@ let Schema = mongoose.Schema;
 
 let fantasySchema = Schema ({
   leagueName: {type: String, required: true},
-  // numPlayers: {type: Number, require: true},
-  // dateOfCreation: {type: Date, default: Date.now},
-  // commissioner: {type: Boolean},
+  creator: {type: Number, ref: 'player'} //jim._id
 });
 
 module.exports = mongoose.model('league', fantasySchema);
