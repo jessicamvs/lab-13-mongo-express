@@ -19,16 +19,12 @@
     "gulp-eslint": "^3.0.1",
     "gulp-mocha": "^3.0.1",
     "gulp-plumber": "^1.1.0",
-    "mocha": "^3.1.2"
+    "mocha": "^3.1.2",
+    "morgan": "^1.7.0"
   },
   "dependencies": {
-    "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
-    "del": "^2.2.2",
     "express": "^4.14.0",
-    "mkdirp": "^0.5.1",
-    "mongoose": "^4.7.5",
-    "morgan": "^1.7.0",
-    "node-uuid": "^1.4.7"
+    "mongoose": "^4.7.5"
   }
 }
