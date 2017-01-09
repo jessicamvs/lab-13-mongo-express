@@ -1,0 +1,31 @@
+{
+  "name": "lab-13-mongo-express",
+  "version": "1.0.0",
+  "description": "mongo database with mongoose",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "mongo",
+    "db",
+    "mongoose"
+  ],
+  "author": "Michael Bishop",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "gulp": "^3.9.1",
+    "mocha": "^3.2.0",
+    "superagent": "^3.3.1"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "mongoose": "^4.7.4",
+    "morgan": "^1.7.0"
+  }
+}

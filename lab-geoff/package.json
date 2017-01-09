@@ -1,0 +1,25 @@
+{
+  "name": "lab13_geoff",
+  "version": "1.0.0",
+  "description": "lab13_single_resource_express/mongo_api",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha",
+    "start": "node server.js"
+  },
+  "author": "geoff_cox",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^3.2.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "chai": "^3.5.0",
+    "express": "^4.14.0",
+    "mongoose": "^4.7.5",
+    "superagent": "^3.3.1"
+  }
+}

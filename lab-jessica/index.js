@@ -5,8 +5,9 @@ const mongoose = require('mongoose');
 const jsonParser = require('body-parser').json();
 const morgan = require('morgan');
 
-const MONGODB_URI = 'mongodb://localhost/dev';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/dev';
 console.log(MONGODB_URI);
+
 const PORT = process.env.PORT || 3000;
 
 mongoose.Promise = Promise;
